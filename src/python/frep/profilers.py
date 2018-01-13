@@ -25,6 +25,7 @@ import re
 import signal
 import subprocess
 import tempfile
+import time
 import traceback
 
 
@@ -230,6 +231,29 @@ class PidStatParser(object):
         if PidStatEnd.find(line):
             return self.CANDY
         return None
+
+
+class SimpleTimerProfiler(object):
+
+    def __init__(self, excGenerator=None, parser=None, messenger=None):
+        self.t = None
+        self.excGenerator = excGenerator if excGenerator is not None else _noExc
+        self.parser = parser if parser is not None else _doNothing
+        self.messenger = messenger if messenger is not None else _doNothing
+
+    @classmethod
+    def create(cls, messenger=None):
+        return cls(excGenerator=ExceptionDescriptor.create, parser=None, messenger=messenger)
+
+    def __enter__(self):
+        self.t = time.time()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        ed = self.excGenerator(exc_type, exc_val, exc_tb)
+        d = dict(time=time.time() - self.t)
+        d['error'] = ed.errorText if ed is not None else ''
+        d['traceback'] = ed.tbStrings if ed is not None else list()
+        self.messenger(d)
 
 
 class PidStatProfiler(object):
