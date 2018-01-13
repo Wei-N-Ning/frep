@@ -213,7 +213,7 @@ class PidStatParser(object):
         result['samples'] = samples
         result['error'] = self.ed.errorText if self.ed is not None else ''
         result['traceback'] = self.ed.tbStrings if self.ed is not None else list()
-        return samples
+        return result
 
     def createSample(self, it):
         try:
@@ -291,8 +291,8 @@ class PidStatProfiler(object):
         self.fd = None
 
     @classmethod
-    def create(cls):
-        return cls()
+    def create(cls, messenger=None):
+        return cls(excGenerator=ExceptionDescriptor.create, parser=PidStatParser.create, messenger=messenger)
 
     def __enter__(self):
         self.fd = open(self.filePath, 'w')

@@ -73,15 +73,20 @@ class PidStatParser(unittest.TestCase):
         parsed = profilers.PidStatParser(f).parse()
         self.assertTrue(parsed)
 
+    def test_expectErrorKey(self):
+        f = testdata.filePath('blender_pidstat_dump.txt')
+        parsed = profilers.PidStatParser(f).parse()
+        self.assertTrue('error' in parsed)
+
     def test_expectNumOfSamples(self):
         f = testdata.filePath('blender_pidstat_dump.txt')
         parsed = profilers.PidStatParser(f).parse()
-        self.assertEqual(13, len(parsed))
+        self.assertEqual(13, len(parsed['samples']))
 
     def test_expectSampleDetails(self):
         f = testdata.filePath('blender_pidstat_dump.txt')
         parsed = profilers.PidStatParser(f).parse()
-        sample = parsed[5]
+        sample = parsed['samples'][5]
         self.assertEqual(16368, sample[3]['TID'])
 
     def test_missingBegin_expectFailed(self):
