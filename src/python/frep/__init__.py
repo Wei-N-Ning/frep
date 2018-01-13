@@ -94,7 +94,8 @@ def patch(moduleDotPath, freeFuncs=None, methods=None, profiler=None):
 
         def _w(*args, **kwargs):
             with profiler:
-                return fOriginal(*args, **kwargs)
+                _f = getattr(m, fFBackUp)
+                return _f(*args, **kwargs)
 
         setattr(m, fFBackUp, fOriginal)
         setattr(m, fF, _w)
@@ -111,7 +112,8 @@ def patch(moduleDotPath, freeFuncs=None, methods=None, profiler=None):
 
         def _w(*args, **kwargs):
             with profiler:
-                return fOriginal(*args, **kwargs)
+                _f = getattr(c, fNameBackUp)
+                return _f(*args, **kwargs)
 
         setattr(c, fNameBackUp, fOriginal)
         setattr(c, fName, _w)
