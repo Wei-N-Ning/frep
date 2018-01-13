@@ -37,12 +37,6 @@ class DefaultProfiler(object):
 
     If the end token is missing, that means the SUP (subject under profiling) exits unexpectedly;
 
-    Good practices:
-
-    User should prefer the create() class (factory) method to its constructor.
-
-    Developer should always provide a create() class (factory) method and should strive to make its
-    interface as simple as possible.
     """
     def __enter__(self):
         pass
@@ -290,8 +284,8 @@ class PidStatProfiler(object):
         """
         self.pid = pid if pid is not None else os.getpid()
         self.filePath = filePath if filePath is not None else tempfile.mkstemp()[-1]
-        self.excGenerator = excGenerator if excGenerator is not None else ExceptionDescriptor.create
-        self.parser = parser if parser is not None else PidStatParser.create
+        self.excGenerator = excGenerator if excGenerator is not None else _noExc
+        self.parser = parser if parser is not None else _doNothing
         self.messenger = messenger if messenger is not None else _doNothing
         self.p = None
         self.fd = None
