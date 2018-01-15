@@ -22,6 +22,7 @@ dump:
 
 import os
 import re
+import shlex
 import signal
 import subprocess
 import tempfile
@@ -254,6 +255,50 @@ class SimpleTimerProfiler(object):
         d['error'] = ed.errorText if ed is not None else ''
         d['traceback'] = ed.tbStrings if ed is not None else list()
         self.messenger(d)
+
+
+class PerfStatProfiler(object):
+    code = \
+"""#!/usr/bin/env python
+import os
+import time
+for i in xrange({}):
+    if os.path.exists('{}'):
+        break
+    time.sleep({})
+
+"""
+    timeout = 3600  # 3600 seconds
+    interval = 0.1  # sleep(0.1)
+    numIterations = (timeout / interval)  # 36000
+    filePath = '/tmp/wait_for_exec_{}.py'
+
+    def __init__(self, pid=None, excGenerator=None, parser=None, messenger=None):
+        self.pid = pid
+        self.excGenerator = excGenerator if excGenerator is not None else _noExc
+        self.parser = parser if parser is not None else _doNothing
+        self.messenger = messenger if messenger is not None else _doNothing
+        self.p = None
+        self._writeFile()
+
+    def _writeFile(self):
+        filePath = self.filePath.format(self.pid)
+        code = self.code.format(self.numIterations, filePath, self.interval)
+        with open(filePath, 'w') as fp:
+            fp.write(code)
+
+    def __enter__(self):
+        filePath = self.filePath.format(self.pid)
+        cmds = shlex.split('perf stat -a -d -t {} {}'.format(self.pid, filePath))
+        self.p = subprocess.Popen(cmds, env=dict(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        filePath = self.filePath.format(self.pid)
+        os.remove(filePath)
+        self.p.wait(timeout=0.11)
+        assert self.p.poll() == 0
+        print self.p.stdout.read()
+        print self.p.stderr.read()
 
 
 class PidStatProfiler(object):
