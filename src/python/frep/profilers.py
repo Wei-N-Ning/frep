@@ -295,7 +295,8 @@ for i in xrange({}):
     def __exit__(self, exc_type, exc_val, exc_tb):
         filePath = self.filePath.format(self.pid)
         os.remove(filePath)
-        self.p.wait(timeout=0.11)
+        while self.p.poll() is None:
+            time.sleep(0.05)
         assert self.p.poll() == 0
         print self.p.stdout.read()
         print self.p.stderr.read()
