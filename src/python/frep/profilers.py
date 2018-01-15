@@ -263,7 +263,7 @@ class PerfStatProfiler(object):
 import os
 import time
 for i in xrange({}):
-    if os.path.exists('{}'):
+    if not os.path.exists('{}'):
         break
     time.sleep({})
 
