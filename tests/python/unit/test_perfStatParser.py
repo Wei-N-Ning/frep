@@ -30,17 +30,22 @@ class TestPerfStatParser(unittest.TestCase):
     def test_expectCpuUtilizationPercentage(self):
         d = perfStat.parse(self.text)
         _ = d['CPU-Utilization']
-        self.assertAlmostEqual(0.003, _[1])
+        self.assertAlmostEqual(0.003, _)
 
     def test_expectInstructionCount(self):
         d = perfStat.parse(self.text)
         _ = d['instructions']
-        self.assertAlmostEqual(1634255, _[0])
+        self.assertAlmostEqual(1634255, _)
+
+    def test_expectExecutedCpuInstructions(self):
+        d = perfStat.parse(self.text)
+        _ = d['CPU-Instructions-executed']
+        self.assertAlmostEqual(7.892358, _)
 
     def test_expectTotalElapsedTime(self):
         d = perfStat.parse(self.text)
         _ = d['time-elapsed']
-        self.assertAlmostEqual(3.001007753, _[0])
+        self.assertAlmostEqual(3.001007753, _)
 
     def test_missingCpuUtilizationPercentage_expectError(self):
         text = \

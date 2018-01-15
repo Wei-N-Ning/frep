@@ -73,7 +73,8 @@ class PerfStatParser(object):
         if k == 'cpu-clock (msec)':
             uPercent = re.match('^([\d.]+).*$', d)
             assert uPercent is not None
-            self.d['CPU-Utilization'] = (value, float(uPercent.groups()[0]))
+            self.d['CPU-Utilization'] = float(uPercent.groups()[0])
+            self.d['CPU-Instructions-executed'] = value
         else:
-            self.d[k] = (value, None)
+            self.d[k] = value
 

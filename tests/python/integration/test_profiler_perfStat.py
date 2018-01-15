@@ -24,7 +24,7 @@ class TestPerfStatProfiler(unittest.TestCase):
     def test_runSUP_expectProfilingData(self):
         self.SUP()
         self.assertTrue(self.d)
-        self.assertTrue(self.d['CPU-Utilization'])
+        self.assertTrue('CPU-Utilization' in self.d)
 
 
 if __name__ == '__main__':
