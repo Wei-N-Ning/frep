@@ -270,7 +270,7 @@ for i in xrange({}):
 """
     timeout = 3600  # 3600 seconds
     interval = 0.1  # sleep(0.1)
-    numIterations = (timeout / interval)  # 36000
+    numIterations = int(timeout / interval)  # 36000
     filePath = '/tmp/wait_for_exec_{}.py'
 
     def __init__(self, pid=None, excGenerator=None, parser=None, messenger=None):
