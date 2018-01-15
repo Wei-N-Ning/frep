@@ -59,7 +59,9 @@ class PerfStatParser(object):
             line = it.next()
         except StopIteration, e:
             raise ValueError('Malformed perf stat output (missing footer):\n{}'.format(self.text))
-        if re.match('^.*\d+ seconds time elapsed', line):
+        r = re.match('^\s+([\d.]+) seconds time elapsed', line)
+        if r:
+            self._addRecord(r.groups()[0], 'time-elapsed', None)
             return Candy
         r = re.match('^\s+([\d,.]+)\s+(.*)#\s+(.*)$', line)
         if r:

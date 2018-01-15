@@ -37,6 +37,11 @@ class TestPerfStatParser(unittest.TestCase):
         _ = d['instructions']
         self.assertAlmostEqual(1634255, _[0])
 
+    def test_expectTotalElapsedTime(self):
+        d = perfStat.parse(self.text)
+        _ = d['time-elapsed']
+        self.assertAlmostEqual(3.001007753, _[0])
+
     def test_missingCpuUtilizationPercentage_expectError(self):
         text = \
 """
