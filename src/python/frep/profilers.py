@@ -279,16 +279,17 @@ for i in xrange({}):
         self.parser = parser if parser is not None else _doNothing
         self.messenger = messenger if messenger is not None else _doNothing
         self.p = None
-        self._writeFile()
 
     def _writeFile(self):
         filePath = self.filePath.format(self.pid)
         code = self.code.format(self.numIterations, filePath, self.interval)
         with open(filePath, 'w') as fp:
             fp.write(code)
+        os.chmod(filePath, 0777)
+        return filePath
 
     def __enter__(self):
-        filePath = self.filePath.format(self.pid)
+        filePath = self._writeFile()
         cmds = shlex.split('perf stat -a -d -t {} {}'.format(self.pid, filePath))
         self.p = subprocess.Popen(cmds, env=dict(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
