@@ -1,0 +1,17 @@
+
+ Performance counter stats for thread id '3650':
+
+          7.892358      cpu-clock (msec)          #    0.003 CPUs utilized
+               592      context-switches          #    0.075 M/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                 0      page-faults               #    0.000 K/sec
+           566,520      cycles                    #    0.072 GHz
+         1,634,255      instructions              #    2.88  insn per cycle
+         1,025,890      branches                  #  129.985 M/sec
+             6,351      branch-misses             #    0.62% of all branches
+         2,078,178      L1-dcache-loads           #  263.315 M/sec
+           243,926      L1-dcache-load-misses     #   11.74% of all L1-dcache hits
+            47,887      LLC-loads                 #    6.068 M/sec                    (34.30%)
+     <not counted>      LLC-load-misses                                               (0.00%)
+
+       3.001007753 seconds time elapsed

@@ -119,7 +119,10 @@ def patch(moduleDotPath, freeFuncs=None, methods=None, profiler=None):
         setattr(c, fName, _w)
         _patchedMethods.append((c, fName, fOriginal, fNameBackUp))
 
-    m = __import__(moduleDotPath, fromlist=[''])
+    import sys
+    m = sys.modules.get(moduleDotPath)
+    if m is None:
+        m = __import__(moduleDotPath, fromlist=[''])
     if freeFuncs:
         for fF in freeFuncs:
             _patchFreeFunc(m, fF)

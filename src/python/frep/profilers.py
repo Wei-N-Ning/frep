@@ -29,6 +29,8 @@ import tempfile
 import time
 import traceback
 
+from frep.parsers import perfStat
+
 
 class DefaultProfiler(object):
     """
@@ -274,9 +276,9 @@ for i in xrange({}):
     filePath = '/tmp/wait_for_exec_{}.py'
 
     def __init__(self, pid=None, excGenerator=None, parser=None, messenger=None):
-        self.pid = pid
-        self.excGenerator = excGenerator if excGenerator is not None else _noExc
-        self.parser = parser if parser is not None else _doNothing
+        self.pid = pid if pid is not None else os.getpid()
+        self.excGenerator = excGenerator if excGenerator is not None else ExceptionDescriptor.create
+        self.parser = parser if parser is not None else perfStat.parse
         self.messenger = messenger if messenger is not None else _doNothing
         self.p = None
 
@@ -298,9 +300,11 @@ for i in xrange({}):
         os.remove(filePath)
         while self.p.poll() is None:
             time.sleep(0.05)
-        assert self.p.poll() == 0
-        print self.p.stdout.read()
-        print self.p.stderr.read()
+        # If SUP completes before the process spins up - Popen - it will throw an error complaining that the Pill
+        # is not found. This typically happens with fast SUP.
+        if self.p.poll() == 0:
+            d = self.parser(self.p.stdout.read() + self.p.stderr.read())
+            self.messenger(d)
 
 
 class PidStatProfiler(object):
