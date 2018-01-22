@@ -7,4 +7,5 @@ etc
 wscript*
 deploy
 src/python/frep/launcher
+src/tests/python/vendor
 
