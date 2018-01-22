@@ -6,4 +6,5 @@ cmake-build-debug
 etc
 wscript*
 deploy
+src/python/frep/launcher
 
